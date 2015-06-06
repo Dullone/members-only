@@ -1,10 +1,9 @@
 class User < ActiveRecord::Base
   has_secure_password
+  before_create :give_token
 
   def User.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                  BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
+    Digest::SHA1.hexdigest(string)
   end
 
   def User.new_token
@@ -13,7 +12,11 @@ class User < ActiveRecord::Base
 
   def remember
     token = User.new_token
-    update_attribute(:remember_me, token)
+    self.remember_me = User.digest(token)
   end
 
+  private
+    def give_token
+      self.remember
+    end
 end

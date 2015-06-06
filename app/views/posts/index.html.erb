@@ -1,0 +1,10 @@
+<h1>Posts:</h1>
+
+<% @posts.each do |post| %>
+  <p>
+    <%= post.text %><br/>
+    <% if current_user? %>
+      <h6><%= "author: " + User.find(post.user_id).name %></h6>
+    <% end %>
+  </p>
+<% end %>
